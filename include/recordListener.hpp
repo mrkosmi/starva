@@ -18,6 +18,9 @@ public:
   void OnMesg(fit::RecordMesg &recordMesg) override;
 
   std::vector<RoutePoint>& getPoints() { return points_; }
+
+protected:
+  double semicircles2Degrees(int32_t semi);
 };
 
 }

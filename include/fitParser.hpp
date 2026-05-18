@@ -7,6 +7,7 @@
 #include "activity.hpp"
 #include "fit_mesg_broadcaster.hpp"
 #include "fit_record_mesg.hpp"
+#include <filesystem>
 
 namespace Starva {
 
@@ -16,7 +17,7 @@ public:
     FitParser() = default;
     ~FitParser() = default;
 
-    Activity parseFile(std::string_view path);
+    Activity parseFile(std::filesystem::path path);
 };
 
 }

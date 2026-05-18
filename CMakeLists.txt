@@ -20,6 +20,7 @@ set(SOURCES
         include/fitParser.hpp
         src/fitParser.cpp
         include/activity.hpp
+        src/activity.cpp
 )
 
 add_executable(starva_app ${SOURCES} ${FIT_SDK_SOURCES})

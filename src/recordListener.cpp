@@ -5,9 +5,41 @@
 #include "recordListener.hpp"
 
 namespace Starva {
+    double RecordListener::semicircles2Degrees(int32_t semi) {
+        return semi * 180.0 / std::pow(2, 31);
+    }
 
-void RecordListener::OnMesg(fit::RecordMesg &recordMesg) {
+    void RecordListener::OnMesg(fit::RecordMesg &recordMesg) {
+    if (recordMesg.IsPositionLatValid() && recordMesg.IsPositionLongValid()) {
+        RoutePoint newPoint{};
+        newPoint.latitude = semicircles2Degrees(recordMesg.GetPositionLat());
+        newPoint.longitude = semicircles2Degrees(recordMesg.GetPositionLong());
+        // newPoint.timestamp = recordMesg.GetTimestamp(); // w sumie chyba narazie useless
 
+        if (recordMesg.IsEnhancedSpeedValid()) {
+            newPoint.speed = recordMesg.GetEnhancedSpeed();
+        }
+        else if (recordMesg.IsSpeedValid()) {
+            newPoint.speed = recordMesg.GetSpeed();
+        }
+
+        if (recordMesg.IsHeartRateValid()) {
+            newPoint.heart_rate = recordMesg.GetHeartRate();
+        }
+
+        if (recordMesg.IsCadenceValid()) {
+            newPoint.cadence = recordMesg.GetCadence();
+        }
+
+        if (recordMesg.IsPowerValid()) {
+            newPoint.power = recordMesg.GetPower();
+        }
+
+        std::cout << newPoint << '\n';
+        points_.push_back(newPoint);
+        return;
+    }
+    std::cout << "Something went wrong.\n";
 }
 
 }

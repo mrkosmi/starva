@@ -13,7 +13,11 @@ namespace Starva {
         std::vector<RoutePoint> routePoints;
     public:
         Activity() = default;
+        Activity(std::vector<RoutePoint>&& routePoints) : routePoints(std::move(routePoints)) {}
         ~Activity() = default;
+
+        std::vector<RoutePoint> getRoutePoints() { return routePoints; }
+        void printFrontBack();
     };
 
 }
