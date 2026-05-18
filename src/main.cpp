@@ -3,8 +3,10 @@
 //
 
 #include <iostream>
+#include <filesystem>
 
 #include "fitParser.hpp"
+#include "mapGenerator.hpp"
 
 int main(int argc, char* argv[]) {
     std::cout << "Starva - a simple .fit activity visualizer." << std::endl;
@@ -22,6 +24,7 @@ int main(int argc, char* argv[]) {
     Starva::FitParser parser;
     Starva::Activity activity = parser.parseFile(filePath);
 
+    activity.setColorMappingSource(Starva::ColorMappingSource::Power); // tez tymczasowo hardcoded bez parsera
     activity.printFrontBack();
 
     return 0;
