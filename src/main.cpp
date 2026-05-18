@@ -14,8 +14,15 @@ int main(int argc, char* argv[]) {
     std::filesystem::path user_path("../examples/10k-run.fit"); // tymczasowo recznie podane bez parsera argumentow
     std::filesystem::path filePath = std::filesystem::absolute(user_path);
 
+    if (!std::filesystem::exists(filePath)) {
+        std::cerr << "File does not exist: " << filePath << std::endl;
+        return 1;
+    }
+
     Starva::FitParser parser;
     Starva::Activity activity = parser.parseFile(filePath);
 
     activity.printFrontBack();
+
+    return 0;
 }

@@ -16,6 +16,7 @@ struct RoutePoint {
     float altitude = 0;
     float speed = -1; // [mm/s]
     u_int8_t heart_rate = 0; // [bpm]
+    bool newHR = false;
     u_int8_t cadence = 0; // [spm]
     u_int16_t power = 0; // [W]
     // float grade; chyba useless
@@ -25,14 +26,14 @@ struct RoutePoint {
 };
 
 inline std::ostream &operator<<(std::ostream &out, const RoutePoint &rp) {
-        out << "Latitude: " << rp.latitude << " Longitude: " << rp.longitude << '\n';
-        out << "Speed: " << rp.speed << '\n';
-        out << "Heart-rate: " << static_cast<int>(rp.heart_rate) << '\n';
-        out << "Cadence: " << static_cast<int>(rp.cadence) << '\n';
-        out << "Power: " << static_cast<int>(rp.power) << '\n';
+    out << "Latitude: " << rp.latitude << " Longitude: " << rp.longitude << '\n';
+    out << "Speed: " << rp.speed << '\n';
+    out << "Heart-rate: " << static_cast<int>(rp.heart_rate) << (rp.newHR ? '!' : ' ') << '\n';
+    out << "Cadence: " << static_cast<int>(rp.cadence) << '\n';
+    out << "Power: " << static_cast<int>(rp.power) << '\n';
 
-        return out;
-    }
+    return out;
+}
 
 
 }

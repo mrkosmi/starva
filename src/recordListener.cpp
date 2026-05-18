@@ -25,6 +25,10 @@ namespace Starva {
 
         if (recordMesg.IsHeartRateValid()) {
             newPoint.heart_rate = recordMesg.GetHeartRate();
+            newPoint.newHR = true;
+        }
+        else {
+            newPoint.heart_rate = !points_.empty() ? points_.back().heart_rate : 0;
         }
 
         if (recordMesg.IsCadenceValid()) {
@@ -39,7 +43,7 @@ namespace Starva {
         points_.push_back(newPoint);
         return;
     }
-    std::cout << "Something went wrong.\n";
+    std::cout << "Corrupted record.\n";
 }
 
 }
