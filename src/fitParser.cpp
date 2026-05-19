@@ -7,7 +7,7 @@
 #include <fstream>
 
 namespace Starva {
-    Activity FitParser::parseFile(std::filesystem::path path) {
+    Activity FitParser::parseFile(const std::filesystem::path& path) {
         fit::Decode decode;
         fit::MesgBroadcaster mesgBroadcaster;
 
@@ -29,6 +29,6 @@ namespace Starva {
             std::cerr << "Exception decoding file: " << e.what() << std::endl;
         }
 
-        return {std::move(recordListener.getPoints())};
+        return Activity(std::move(recordListener.getPoints()));
     }
 }

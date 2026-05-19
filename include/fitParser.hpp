@@ -17,7 +17,7 @@ public:
     FitParser() = default;
     ~FitParser() = default;
 
-    Activity parseFile(std::filesystem::path path);
+    Activity parseFile(const std::filesystem::path& path);
 };
 
 }
