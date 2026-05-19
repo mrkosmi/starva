@@ -29,6 +29,8 @@ namespace Starva {
 
         [[nodiscard]] const std::vector<RoutePoint>& getRoutePoints() const { return routePoints; }
         void printFrontBack();
+
+        [[nodiscard]] float totalDistance() const { return routePoints.back().distance; }
     };
 
 }

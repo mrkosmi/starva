@@ -29,15 +29,18 @@ namespace Starva {
         auto maxval = getSourceVal(*max_it);
         auto roznica = maxval - minval;
 
+        const float totalDistance = activity_.totalDistance();
+        if (totalDistance==0.0) throw std::runtime_error("distance=0: would have to divide by 0 lol");
+
         std::vector<MapPoint> mapPoints{};
         for (const RoutePoint& point : points) {
             double sv = getSourceVal(point);
             double normalized = (roznica==0) ? 0.5 : (sv - minval) / roznica;
-            mapPoints.push_back({point.latitude, point.longitude, normalized});
+            double progress = point.distance / totalDistance;
+            mapPoints.push_back({point.latitude, point.longitude, normalized, progress});
         }
 
         return mapPoints;
-
     }
 
     MapGenerator::Color MapGenerator::getColor(double weight) {

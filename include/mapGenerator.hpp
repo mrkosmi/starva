@@ -21,6 +21,7 @@ namespace Starva {
             double latitude;
             double longitude;
             double weight;
+            double progress;
         };
 
         const Activity& activity_;
