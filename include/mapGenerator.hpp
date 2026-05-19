@@ -11,6 +11,7 @@ namespace Starva {
     public:
         struct Color {
             uint8_t r, g, b;
+            std::string toHex();
         };
 
         explicit MapGenerator(const Activity& activity) : activity_(activity) {}

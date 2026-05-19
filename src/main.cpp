@@ -27,5 +27,12 @@ int main(int argc, char* argv[]) {
     activity.setColorMappingSource(Starva::ColorMappingSource::Power); // tez tymczasowo hardcoded bez parsera
     activity.printFrontBack();
 
+    Starva::MapGenerator mapGenerator(activity);
+    std::filesystem::path user_outPath("../mapa.html"); // tymczasowo recznie podane bez parsera argumentow
+    std::filesystem::path outputPath = std::filesystem::absolute(user_outPath);
+    std::cout << outputPath << std::endl;
+
+    mapGenerator.generate(outputPath);
+
     return 0;
 }
