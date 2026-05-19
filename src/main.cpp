@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 
     std::filesystem::path current_path = std::filesystem::current_path();
 
-    std::filesystem::path user_path("../examples/10k-run.fit"); // tymczasowo recznie podane bez parsera argumentow
+    std::filesystem::path user_path("../examples/interval-run.fit"); // tymczasowo recznie podane bez parsera argumentow
     std::filesystem::path filePath = std::filesystem::absolute(user_path);
 
     if (!std::filesystem::exists(filePath)) {
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     Starva::FitParser parser;
     Starva::Activity activity = parser.parseFile(filePath);
 
-    activity.setColorMappingSource(Starva::ColorMappingSource::Power); // tez tymczasowo hardcoded bez parsera
+    activity.setColorMappingSource(Starva::ColorMappingSource::Speed); // tez tymczasowo hardcoded bez parsera
     activity.printFrontBack();
 
     Starva::MapGenerator mapGenerator(activity);

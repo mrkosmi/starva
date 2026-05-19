@@ -17,6 +17,7 @@ namespace Starva {
             RoutePoint newPoint{};
             newPoint.latitude = semicircles2Degrees(recordMesg.GetPositionLat());
             newPoint.longitude = semicircles2Degrees(recordMesg.GetPositionLong());
+
             // newPoint.timestamp = recordMesg.GetTimestamp(); // w sumie chyba narazie useless
 
             if (recordMesg.IsEnhancedSpeedValid()) {
@@ -42,15 +43,23 @@ namespace Starva {
                 newPoint.power = recordMesg.GetPower();
             }
 
+            /*
             if (recordMesg.IsDistanceValid()) {
                 newPoint.distance = recordMesg.GetDistance();
+                if (newPoint.distance <= points_.back().distance) {
+                    size_t s = points_.size();
+                    points_.back().distance = (newPoint.distance + points_[s-2].distance) / 2;
+                }
             }
             else {
                 newPoint.distance = points_.empty() ? 0 : (points_.back().distance + newPoint.speed); // to jest troche logiczne oszustwo ale daje bledy w granicach max 3 metrow wiec wywalone narazie
             }
+            */
 
-            std::cout << newPoint << '\n';
-            points_.push_back(newPoint);
+            if (points_.empty() || !(newPoint.latitude == points_.back().latitude) || !(newPoint.longitude == points_.back().longitude)) {
+                std::cout << newPoint << '\n';
+                points_.push_back(newPoint);
+            }
             return;
         }
         std::cout << "Corrupted record.\n";

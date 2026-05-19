@@ -29,5 +29,6 @@ namespace Starva {
 
         std::vector<MapPoint> prepareMapPoints();
         Color getColor(double weight);
+        double calcDist(const RoutePoint& p1, const RoutePoint& p2) const;
     };
 }

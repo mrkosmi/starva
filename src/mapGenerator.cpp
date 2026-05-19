@@ -6,6 +6,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <format>
+#include <cmath>
 
 namespace Starva {
     std::vector<MapGenerator::MapPoint> MapGenerator::prepareMapPoints() {
@@ -32,15 +33,25 @@ namespace Starva {
         auto maxval = getSourceVal(*max_it);
         auto roznica = maxval - minval;
 
-        const float totalDistance = activity_.totalDistance();
-        if (totalDistance==0.0) throw std::runtime_error("distance=0: would have to divide by 0 lol");
+        std::vector<double> lengths;
+        lengths.push_back(0);
+        double totalLen = 0;
+        for (size_t i=1; i<points.size(); ++i) {
+            auto d = calcDist(points[i-1], points[i]);
+            totalLen += d;
+            lengths.push_back(totalLen);
+        }
+
+        if (totalLen<=0.0) throw std::runtime_error("distance=0: would have to divide by 0 or negative lol");
 
         std::vector<MapPoint> mapPoints{};
+        size_t i=0;
         for (const RoutePoint& point : points) {
             double sv = getSourceVal(point);
             double normalized = (roznica==0) ? 0.5 : (sv - minval) / roznica;
-            double progress = point.distance / totalDistance;
-            mapPoints.push_back({point.latitude, point.longitude, normalized, progress});
+            //double progress = point.distance / totalDistance;
+            mapPoints.push_back({point.latitude, point.longitude, normalized, lengths[i]/totalLen});
+            ++i;
         }
 
         return mapPoints;
@@ -74,13 +85,18 @@ namespace Starva {
 
     std::string MapGenerator::Color::toHex() {
         std::string hex = "#";
-        hex += std::format("{:02X}", r);
-        hex += std::format("{:02X}", g);
-        hex += std::format("{:02X}", b);
+        hex += std::format("{:02x}", r);
+        hex += std::format("{:02x}", g);
+        hex += std::format("{:02x}", b);
         return hex;
     }
 
     void MapGenerator::generate(const std::filesystem::path &output_path) {
+        if (std::filesystem::exists(output_path)) {
+            //throw std::runtime_error("czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci");
+            std::cerr << "czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci\n";
+        }
+
         using json = nlohmann::json;
         auto mapPoints = prepareMapPoints();
         if (mapPoints.empty()) throw std::runtime_error("Something went wrong (mapPoints is empty)"); // to sie chyba nie moze wydarzyc, mzona przeanalizowac
@@ -100,7 +116,85 @@ namespace Starva {
             gradient.push_back(getColor(point.weight).toHex()); // TODO: toHex()
         }
 
-        std::string html = "placeholder";
+        // std::string html = "placeholder";
+        std::string html = R"(
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Your activity map )" + activity_.mappingSourceString() + R"(</title>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" />
+                <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+                <style>
+                    body { margin: 0; padding: 0; }
+                    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+                </style>
+            </head>
+            <body>
+            <div id="map"></div>
+            <script>
+                const map = new maplibregl.Map({
+                    container: 'map',
+                    style: 'https://tiles.openfreemap.org/styles/positron',
+                    center: [)" + std::to_string(mapPoints.front().longitude) + ", " + std::to_string(mapPoints.front().latitude) + R"(],
+                    zoom: 12
+                });
+
+                const geojson = {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': )" + coordinates.dump() + R"(
+                    }
+                };
+
+                map.on('load', () => {
+                    map.addSource('route', {
+                        'type': 'geojson',
+                        'lineMetrics': true,
+                        'data': geojson
+                    });
+
+                    map.addLayer({
+                        'id': 'backblur',
+                        'type': 'line',
+                        'source': 'route',
+                        'layout': {
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        },
+                        'paint': {
+                            'line-width': 12,
+                            'line-blur': 6,
+                            'line-opacity': 0.67,
+                            'line-gradient': )" + gradient.dump() + R"(
+                        }
+                    });
+
+                    map.addLayer({
+                        'id': 'mainline',
+                        'type': 'line',
+                        'source': 'route',
+                        'layout': {
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        },
+                        'paint': {
+                            'line-width': 4,
+                            'line-gradient': )" + gradient.dump() + R"(
+                        }
+                    });
+
+                    const bounds = new maplibregl.LngLatBounds();
+                    geojson.geometry.coordinates.forEach(coord => bounds.extend(coord));
+                    map.fitBounds(bounds, { padding: 100 });
+                });
+            </script>
+            </body>
+            </html>
+        )";
         /* WZÓR Z https://maplibre.org/maplibre-gl-js/docs/examples/create-a-gradient-line-using-an-expression/#__tabbed_1_2
 <!DOCTYPE html>
 <html lang="en">
@@ -208,11 +302,18 @@ namespace Starva {
 </html>
 */
 
-        if (std::filesystem::exists(output_path)) {
-            throw std::runtime_error("czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci");
-        }
-
         std::ofstream out(output_path);
         out << html;
+    }
+
+    double MapGenerator::calcDist(const RoutePoint &p1, const RoutePoint &p2) const {
+        auto lat1 = p1.latitude * M_PI / 180.0;
+        auto lat2 = p2.latitude * M_PI / 180.0;
+        auto dlat = lat2 - lat1;
+        auto dlon = (p2.longitude - p1.longitude) * M_PI / 180.0;
+
+        auto a = std::sin(dlat/2) * std::sin(dlat/2) + std::cos(lat1) * std::cos(lat2) * std::sin(dlon/2)*std::sin(dlon/2);
+        auto c = 2 * std::atan2(std::sqrt(a), std::sqrt(1-a));
+        return 6371000.0 * c;
     }
 }
