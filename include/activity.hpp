@@ -21,13 +21,13 @@ namespace Starva {
         ColorMappingSource colorMappingSource = ColorMappingSource::None;
     public:
         Activity() = default;
-        Activity(std::vector<RoutePoint>&& routePoints) : routePoints(std::move(routePoints)) {}
+        explicit Activity(std::vector<RoutePoint>&& routePoints) : routePoints(std::move(routePoints)) {}
         ~Activity() = default;
 
         void setColorMappingSource(ColorMappingSource source) { colorMappingSource = source; }
-        ColorMappingSource getColorMappingSource() const { return colorMappingSource; }
+        [[nodiscard]] const ColorMappingSource& getColorMappingSource() const { return colorMappingSource; }
 
-        std::vector<RoutePoint> getRoutePoints() const { return routePoints; }
+        [[nodiscard]] const std::vector<RoutePoint>& getRoutePoints() const { return routePoints; }
         void printFrontBack();
     };
 
