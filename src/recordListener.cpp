@@ -57,12 +57,12 @@ namespace Starva {
             */
 
             if (points_.empty() || !(newPoint.latitude == points_.back().latitude) || !(newPoint.longitude == points_.back().longitude)) {
-                std::cout << newPoint << '\n';
+                // std::cout << newPoint << '\n';
                 points_.push_back(newPoint);
             }
             return;
         }
-        std::cout << "Corrupted record.\n";
+        // std::cout << "Corrupted record.\n";
     }
 
 }

@@ -92,10 +92,11 @@ namespace Starva {
     }
 
     void MapGenerator::generate(const std::filesystem::path &output_path) {
-        if (std::filesystem::exists(output_path)) {
-            //throw std::runtime_error("czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci");
-            std::cerr << "czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci\n";
-        }
+
+        // if (std::filesystem::exists(output_path)) {
+        //     //throw std::runtime_error("czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci");
+        //     std::cerr << "czy ktos jest pewny ze chce nadpisac trzeba zapytac w przyszlosci\n";
+        // }
 
         using json = nlohmann::json;
         auto mapPoints = prepareMapPoints();
