@@ -77,7 +77,7 @@ Run the application by providing the path to your `.fit` file:
 
 ---
 
-### How to export a [Strava](Strava.com) activity
+### How to export a [Strava](https://strava.com) activity
 
 Navigate to one of your Activity pages and from the more (ellipses) menu, select "Export Original".
 
