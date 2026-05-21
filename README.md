@@ -83,6 +83,8 @@ Navigate to one of your Activity pages and from the more (ellipses) menu, select
 
 <img src="img/strava-export.jpg" alt="Export_Tutorial" width=670>
 
+---
+
 ## Project Structure
 
 - `src/` & `include/`: Core application logic (Parser, Generator, Activity management).
