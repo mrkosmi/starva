@@ -16,18 +16,24 @@ namespace Starva {
 
         file.open(path, std::ios::in | std::ios::binary);
         if (!file.is_open()) {
-            std::cerr << "Error opening file: " << path << std::endl;
+            // std::cerr << "Error opening file: " << path << std::endl;
             throw std::runtime_error("Error opening file");
             // jakis blad moznaby wywalic
         }
 
+        if (!decode.CheckIntegrity(file))
+        {
+            // std::cout << "FIT file integrity failed.\n";
+            throw std::runtime_error("FIT file integrity failed");
+        }
+
         mesgBroadcaster.AddListener(recordListener);
 
-        try {
+        // try {
             decode.Read(file, mesgBroadcaster);
-        } catch (const fit::RuntimeException& e) {
-            std::cerr << "Exception decoding file: " << e.what() << std::endl;
-        }
+        // } catch (const fit::RuntimeException& e) {
+        //     std::cerr << "Exception decoding file: " << e.what() << std::endl;
+        // }
 
         return Activity(std::move(recordListener.getPoints()));
     }

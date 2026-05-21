@@ -53,8 +53,15 @@ int main(int argc, char* argv[]) {
         if (std::tolower(answer) == 'n') return 1;
     }
 
-    Starva::FitParser parser;
-    Starva::Activity activity = parser.parseFile(inputPath);
+    Starva::Activity activity;
+    try {
+        Starva::FitParser parser;
+        activity = parser.parseFile(inputPath);
+    }
+    catch (std::exception& e) {
+        std::cerr << "Error decoding file: " << e.what() << std::endl;
+        return 1;
+    }
 
     activity.setColorMappingSource(mode);
 
