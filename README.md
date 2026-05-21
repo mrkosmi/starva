@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![C++ Standard](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
 
-**Starva** is a high-performance C++ tool designed to transform your Garmin or Strava `.fit` activity files into interactive HTML maps. Unlike standard activity trackers, Starva allows you to visually analyze your performance by highlighting specific training metrics like **speed**, **heart rate**, or **power** using dynamic, smooth color gradients.
+**Starva** is a high-performance C++ tool designed to transform your Garmin or Strava `.fit` activity files into interactive HTML maps. Starva allows you to visually analyze your performance by highlighting specific training metrics like **speed**, **heart rate**, or **power** using dynamic, smooth color gradients.
 
 <img src="img/map-screenshot.png" alt="Map_Preview" width=670>
 
@@ -82,6 +82,8 @@ Run the application by providing the path to your `.fit` file:
 Navigate to one of your Activity pages and from the more (ellipses) menu, select "Export Original".
 
 <img src="img/strava-export.jpg" alt="Export_Tutorial" width=670>
+
+---
 
 ## Project Structure
 
